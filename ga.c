@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <time.h>
+#include<string.h>
 
 typedef struct individuo{
 int genotipo[6];
@@ -22,18 +23,26 @@ int precocidade = 0;
 int alta_imunologia = 1;
 
 individuo *cria_individuo();
-populacao *cria_populacao(int n);
+populacao *cria_populacao();
 populacao *selecao(populacao *p);
 void imprime_p(populacao *p);
 int populacao_vazia(populacao *p);
+void insere_individuo(populacao *p, individuo *n);
 
 int
 main(){
 int i = 0;
-populacao *p = cria_populacao(8);
+
+srand( (unsigned)time(NULL) );
+populacao *p = cria_populacao();
+while(i<8){
+individuo *boi = cria_individuo();
+insere_individuo(p,boi);
+i++;
+}
 avalia_populacao(p);
 imprime_p(p);
-printf("\n\n");
+printf("\n\n--Selecionados--\n\n");
 populacao *selecionados = selecao(p);
 imprime_p(selecionados);
 
@@ -73,8 +82,8 @@ populacao *selecao(populacao *p){
     float custo_medio = 0;
     float custo = 0;
     individuo *i = p->inicio;
-    populacao *selecionados = (populacao*)malloc(sizeof(populacao));
-    selecionados->inicio = (individuo*)malloc(sizeof(individuo));
+    populacao *selecionados = cria_populacao();
+
     while(i->prox != NULL){
         valor_total += i->custo;
         avaliacao_total += i->avaliacao;
@@ -90,16 +99,8 @@ populacao *selecao(populacao *p){
     while(i->prox != NULL){
     custo = i->custo / i->avaliacao;
         if(custo < custo_medio){
-            if(aux == NULL){
-                aux = i;
-                aux->prox = NULL;
-                selecionados->inicio = aux;
-                aux2 = aux;
-            }else{
-                aux = i;
-                aux->prox = NULL;
-                aux2->prox = aux;
-            }
+        individuo *aux = cria_individuo();
+        insere_individuo(selecionados, aux);
         }
     i = i->prox;
     }
@@ -108,15 +109,18 @@ populacao *selecao(populacao *p){
 }
 
 individuo *cria_individuo(){ // Função cria o individuo gerando os genes aleatórios
+
 int i=0;
 individuo *n = (individuo*)malloc(sizeof(individuo));
 while(i<6){
 n->genotipo[i] = rand()%2;
 i++;
 }
+
 n->prox = NULL;
-n->custo = 600 + (rand()%600);
 n->avaliacao = NULL;
+n->custo = 600 + (rand()%600);
+
 return n;
 }
 
@@ -128,20 +132,27 @@ int populacao_vazia(populacao *p){
     }
 }
 
-populacao *cria_populacao(int n){ // tem como parametro a quantidade de individuos da população
-int i=0;
-srand( (unsigned)time(NULL) );
-individuo *aux;
-populacao *p = (populacao*)malloc(sizeof(populacao));
-aux = cria_individuo();
-p->inicio = aux;
-while(i<n){
-aux->prox = cria_individuo();
-aux = aux->prox;
-p->quantidade++;
-i++;
+populacao *cria_populacao(){ // tem como parametro a quantidade de individuos da população
+
+    individuo *aux;
+    populacao *p = (populacao*)malloc(sizeof(populacao));
+    aux = cria_individuo();
+    p->inicio = aux;
+    return p;
 }
-return p;
+
+void insere_individuo(populacao *p, individuo *n){
+	individuo *aux = p->inicio;
+	if(aux->prox == NULL){
+		aux->prox = n;
+	}else{
+
+		while(aux->prox != NULL){
+			aux = aux->prox;
+		}
+
+		aux->prox = n;
+	}
 }
 
 void imprime_p(populacao *p){ // função que imprime população
