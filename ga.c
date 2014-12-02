@@ -1,7 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <time.h>
-#include<string.h>
 
 typedef struct individuo{
 int genotipo[6];
@@ -99,7 +98,16 @@ populacao *selecao(populacao *p){
     while(i->prox != NULL){
     custo = i->custo / i->avaliacao;
         if(custo < custo_medio){
-        individuo *aux = cria_individuo();
+        individuo *aux = (individuo*)malloc(sizeof(individuo));
+        aux->genotipo[0] = i->genotipo[0];
+        aux->genotipo[1] = i->genotipo[1];
+        aux->genotipo[2] = i->genotipo[2];
+        aux->genotipo[3] = i->genotipo[3];
+        aux->genotipo[4] = i->genotipo[4];
+        aux->genotipo[5] = i->genotipo[5];
+        aux->custo = i->custo;
+        aux->avaliacao = i->avaliacao;
+        aux->prox = NULL;
         insere_individuo(selecionados, aux);
         }
     i = i->prox;
@@ -136,17 +144,15 @@ populacao *cria_populacao(){ // tem como parametro a quantidade de individuos da
 
     individuo *aux;
     populacao *p = (populacao*)malloc(sizeof(populacao));
-    aux = cria_individuo();
-    p->inicio = aux;
+    p->inicio = NULL;
     return p;
 }
 
 void insere_individuo(populacao *p, individuo *n){
 	individuo *aux = p->inicio;
-	if(aux->prox == NULL){
-		aux->prox = n;
+	if(aux == NULL){
+		aux = n;
 	}else{
-
 		while(aux->prox != NULL){
 			aux = aux->prox;
 		}
