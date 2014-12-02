@@ -142,18 +142,15 @@ int populacao_vazia(populacao *p){
 
 populacao *cria_populacao(){ // tem como parametro a quantidade de individuos da população
 
-    individuo *aux;
     populacao *p = (populacao*)malloc(sizeof(populacao));
-    individuo *i = (individuo*)malloc(sizeof(individuo));
-    i->prox = NULL;
-    p->inicio = i;
+    p->inicio = NULL;
     return p;
 }
 
 void insere_individuo(populacao *p, individuo *n){
 	individuo *aux = p->inicio;
 	if(aux == NULL){
-		aux = n;
+		p->inicio = n;  //tirei o "n" que referenciava o p->inicio e coloquei ele msm
 	}else{
 		while(aux->prox != NULL){
 			aux = aux->prox;
