@@ -144,7 +144,9 @@ populacao *cria_populacao(){ // tem como parametro a quantidade de individuos da
 
     individuo *aux;
     populacao *p = (populacao*)malloc(sizeof(populacao));
-    p->inicio = NULL;
+    individuo *i = (individuo*)malloc(sizeof(individuo));
+    i->prox = NULL;
+    p->inicio = i;
     return p;
 }
 
